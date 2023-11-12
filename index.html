@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="description"
+      content="IP3&mdash;three words for any IPv4 address"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>IP3&mdash;three words for any IPv4 address</title>
+    <script type="text/javascript" src="words.js"></script>
+    <script type="text/javascript" src="index.js"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: sans-serif;
+        padding: 1rem;
+      }
+      button#http {
+        font-size: 1.5rem;
+        padding: 0.5rem;
+      }
+      section {
+        margin-bottom: 4rem;
+      }
+      section#interstitial {
+        display: none;
+        padding: 0.5rem 1rem;
+        border: 1px solid #ccc;
+        background-color: #eee;
+      }
+      button,
+      input {
+        padding: 0.5rem;
+      }
+      li {
+        margin: 1rem 0;
+      }
+    </style>
+  </head>
+  <body onload="DomLoad()">
+    <h1>IP3&mdash;three words for any IPv4 address</h1>
+    <section id="interstitial">
+      <p>
+        The words <b id="words"></b> point to the IP address <b id="ip"></b>
+      </p>
+      <p>
+        If you would like to know where this might go (e.g. <u>example.com</u>),
+        use any &ldquo;reverse DNS lookup&rdquo; tool.
+      </p>
+      <p>
+        <button id="http">
+          Navigate to <b>http://</b><span id="http-address"></span>
+        </button>
+      </p>
+    </section>
+    <section>
+      <h2>Calculate which three words represent an IP address or domain:</h2>
+      <input
+        id="domain"
+        type="text"
+        placeholder="e.g. 142.251.36.206"
+        value="google.com"
+      />
+      <button onclick="DomCalculate()">Calculate</button>
+      <ul id="results"></ul>
+    </section>
+    <section>
+      <p>
+        This is a toy with myriad issues: reverse DNS lookup is harder than it
+        should be, HTTPS isn't designed to work well with bare IP addresses,
+        IPv4 will eventually be deprecated, and the fundamental problems with
+        What3Words apply here also.
+      </p>
+      <p>
+        Imagine how much lower the barrier to entry for the web would be if bare
+        IP addresses, or cryptographic addresses for each author, were made more
+        accessible (or just <i>accessible</i>).
+      </p>
+      <p>
+        Furthermore, the vast majority of our progeny will be among the
+        stars&mdash;what will the web look like then?
+      </p>
+    </section>
+  </body>
+</html>
