@@ -1,9 +1,11 @@
 
 ; From https://github.com/david47k/top-english-wordlists
-(-> "top_english_adjs_mixed_10000.txt"
-    read-lines
-    (filter (comp len [3 4 5 6]))
+(var nouns (-> "top_english_nouns_mixed_10000.txt" read-lines (filter (comp len [4 5]))))
+(var adjs (-> "top_english_adjs_mixed_10000.txt" read-lines (filter (comp len [4 5]))))
+
+(-> (.. vec nouns adjs)
     (filter @(= (lower-case %)))
     (filter (all? (map char-code (range 97 123))))
+    distinct
     (sort-by len)
     (juxt (join " ") len))

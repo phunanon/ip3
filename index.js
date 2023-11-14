@@ -1,7 +1,19 @@
-const e = (x) => document.querySelector(x);
+const e = x => document.querySelector(x);
+const max = BigInt(Math.ceil(Math.cbrt(256 ** 4)));
+const numWords = BigInt(new Set(words).size);
+
+//Assertion that there are no duplicate words
+if (numWords !== BigInt(words.length)) {
+  alert(`You have duplicate words.`);
+}
+
+//Assertion that there are enough words in the dictionary for a triplet
+if (numWords !== max) {
+  alert(`You have ${numWords} words but you need need exactly ${max}.`);
+}
 
 async function DomLoad() {
-  e("input#domain").addEventListener("keypress", (e) => {
+  e("input#domain").addEventListener("keypress", e => {
     if (e.key !== "Enter") return;
     DomCalculate();
   });
@@ -31,35 +43,24 @@ async function GetIp(domain) {
 function ParseTriplet(triplet) {
   const [x, y, z] = triplet.split("-");
   if (!x || !y || !z) return;
-  const [a, b, c] = [x, y, z].map((word) => words.indexOf(word));
+  const [a, b, c] = [x, y, z].map(word => BigInt(words.indexOf(word)));
   if (a < 0 || b < 0 || c < 0) return;
-  const sum = a + b * words.length + c * words.length * words.length;
-  const [b0, b1, b2, b3] = [sum, sum, sum, sum].map(
-    (x, i) => Math.floor(x / 256 ** i) % 256
+  const sum = a + b * max + c * max * max;
+  const [b3, b2, b1, b0] = [sum, sum, sum, sum].map(
+    (x, i) => (x / 256n ** BigInt(i)) % 256n,
   );
   return `${b0}.${b1}.${b2}.${b3}`;
 }
 
-//Due to there being 12 billion available word combinations,
-//  each IP can have three triplets each.
-function MakeHashes(ip) {
-  const len = BigInt(words.length);
-  const max = 256n ** 4n;
-  const [b0, b1, b2, b3] = ip.split(".").map((x) => BigInt(parseInt(x)));
-  const sum = b0 + b1 * 256n + b2 * 256n * 256n + b3 * 256n * 256n * 256n;
-  const makeTriplet = (sum) => [
-    sum % len,
-    (sum / len) % len,
-    (sum / len ** 2n) % len,
-  ];
-  const sums = [sum, max + sum, max + max + sum].map(makeTriplet);
-  const triplets = sums.map((x) => x.map((i) => words[Number(i)]).join("-"));
+function MakeTriplet(ip) {
+  const [b0, b1, b2, b3] = ip.split(".").map(x => BigInt(parseInt(x)));
+  const sum = b0 * 256n ** 3n + b1 * 256n ** 2n + b2 * 256n + b3;
+  const digits = [sum % max, (sum / max) % max, (sum / max ** 2n) % max];
+  const triplet = digits.map(i => words[Number(i)]).join("-");
   //Assertion
-  triplets.forEach((triplet) => {
-    const ip2 = ParseTriplet(triplet);
-    if (ip !== ip2) alert(`Assertion failed: ${ip} != ${ip2}`);
-  });
-  return triplets;
+  const ip2 = ParseTriplet(triplet);
+  if (ip !== ip2) alert(`Assertion failed: ${ip} != ${ip2}`);
+  return triplet;
 }
 
 async function DomCalculate() {
@@ -69,19 +70,15 @@ async function DomCalculate() {
   const ip = domain.match(regex) ? domain : (await GetIp(domain)) ?? domain;
   if (!ip.match(regex)) return alert("Invalid IP address or domain name.");
   input.value = ip;
-  const triplets = MakeHashes(ip);
-  const results = e("ul#results");
-  results.innerHTML = "";
-  triplets.forEach((triplet) => {
-    const li = document.createElement("li");
-    const a = document.createElement("a");
-    a.href = `#${triplet}`;
-    a.innerText = triplet;
-    li.appendChild(a);
-    results.appendChild(li);
-    a.addEventListener("click", () => {
-      window.location.hash = triplet;
-      window.location.reload();
-    });
+  const triplet = MakeTriplet(ip);
+  const result = e("h3#result");
+  result.innerHTML = "";
+  const a = document.createElement("a");
+  a.href = `#${triplet}`;
+  a.innerText = triplet;
+  result.appendChild(a);
+  a.addEventListener("click", () => {
+    window.location.hash = triplet;
+    window.location.reload();
   });
 }

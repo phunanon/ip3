@@ -17,6 +17,7 @@
       body {
         font-family: sans-serif;
         padding: 1rem;
+        background-color: #cccbc0;
       }
       button#http {
         font-size: 1.5rem;
@@ -28,8 +29,8 @@
       section#interstitial {
         display: none;
         padding: 0.5rem 1rem;
-        border: 1px solid #ccc;
-        background-color: #eee;
+        border: 1px solid #000;
+        background-color: #bbb;
       }
       button,
       input {
@@ -61,11 +62,11 @@
       <input
         id="domain"
         type="text"
-        placeholder="e.g. 142.251.36.206"
+        placeholder="e.g. 172.217.16.238"
         value="google.com"
       />
       <button onclick="DomCalculate()">Calculate</button>
-      <ul id="results"></ul>
+      <h3 id="result"></h3>
     </section>
     <section>
       <p>
